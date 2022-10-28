@@ -507,7 +507,7 @@ def private_room_upload(id):
     # print(private)
 
     if session.get('private').get(id)[0] not in private_key[id]:
-        return str()session.clear()
+        
         session['hacker']=True
         return '拒绝访问：本次请求可能含有攻击行为。1'
     pswd=session.get('private').get(id)[2]
