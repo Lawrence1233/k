@@ -130,8 +130,8 @@ def b4():
 
 
 
-    if session.get('id') not in idl:#将记录绑定在user_id
-        idl[session['id']]=request.remote_addr
+#     if session.get('id') not in idl:#将记录绑定在user_id
+#         idl[session['id']]=request.remote_addr
 
     if idl[session['id']]!=request.remote_addr:
         del idl[session['id']]
