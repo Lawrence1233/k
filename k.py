@@ -105,9 +105,11 @@ def b4():
     if session.get('id') == None:
         session['id']=rd(32)
         idl[session['id']]=request.remote_addr
+        
     if session.get('hacker') == True:
         del session['hacker']
         return '温馨提示:你最近的操作可能有恶意行为，请友善使用该网站。'
+    
     for i in notice.items():
         if session.get(i[0]) == None:
             session[i[0]]='1'
@@ -129,7 +131,7 @@ def b4():
 
 
 #     if session.get('id') not in idl:#将记录绑定在user_id
-#         session['id']=rd(32)
+#         
 #         idl[session['id']]=request.remote_addr
 
     if idl[session['id']]!=request.remote_addr:
@@ -141,11 +143,11 @@ def b4():
 
     session['last_time']=time.time()
 
-@app.after_request
-def after(res):
-    session.permanent = True
-    app.permanent_session_lifetime = timedelta(hours=24)
-    return res
+# @app.after_request
+# def after(res):
+#     session.permanent = True
+#     app.permanent_session_lifetime = timedelta(hours=24)
+#     return res
 
 @app.route('/')
 def index():
