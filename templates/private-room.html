@@ -1,0 +1,44 @@
+<!doctype html>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=yes"/>
+<title>聊天室</title>
+<meta charset="utf-8">
+<script type="text/javascript" src="/static/jquery.js"></script>
+<p>房间：{{id}}</p>
+<small>此房间为非公开房间，您的房间已受到保护。</small>
+<form action = "/private-chat-room/{{id}}/chat/upload" method = "POST">
+<!--    UID:<input type="text" name="name" placeholder="" value="{{name}}" id="name"/><br/>-->
+    <br/>
+    内容:<textarea name="text" cols="50" rows="5" warp="hard" placeholder="say something" id="text" onchange="a()" >{{text}}</textarea><br/>
+    <input type="submit" value="发送"><br/>
+    <strong style="color:red">{{tips}}</strong>
+<!--    <p id="tips"></p>-->
+</form>
+<br/>
+<hr/>
+<div id="dq">
+    {%for i in message%}
+    <pre>UID:{{i[0]}} Time:{{i[2]}} <!--User-Agent:{{i[3]}}--></pre>
+<!--    <strong style="color:red">{{i[7]}}</strong><br/>-->
+    <small>Says:</small><pre>{{i[1]}}</pre>
+<!--    <i><small>(通过查询ip所在地获取信息 仅供参考)这条消息于 国家 <strong style="color:{{i[8]}}">{{i[4]}}</strong> 省/州 <strong>{{i[5]}}</strong> 发出(ip:{{i[6]}})</small></i>-->
+    <hr/>
+    {%endfor%}
+</div>
+<small>到底啦</small>
+<!--<script>-->
+
+<!--function a(){-->
+<!--    var text=document.getElementById("text").value-->
+<!--    window.location.replace("/room/{{id}}?name={{name}}&text="+text)-->
+<!--}-->
+
+<!--</script>-->
+
+<script type="text/javascript">
+setInterval(function() {
+    $("#dq").load(location.href+" #dq>*","");
+}, 3000);
+//每隔5s自动刷新
+// (location.href+" #dq>*","" )后一个id选择器一定要加个空格，后面*和"",也要加上，不然页面就乱。
+
+</script>
