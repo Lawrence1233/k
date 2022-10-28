@@ -499,12 +499,15 @@ def private_room_upload(id):
         return '无法访问此房间：您并未在这个房间登录，请登录后重试。'
 
     if session.get('id') not in private_user_key:
+        print(session.get('id'))
+        print(private_user_key)
+        
         session.clear()
         return '拒绝访问：本次请求可能含有攻击行为。2'
     # print(private)
 
     if session.get('private').get(id)[0] not in private_key[id]:
-        session.clear()
+        return str()session.clear()
         session['hacker']=True
         return '拒绝访问：本次请求可能含有攻击行为。1'
     pswd=session.get('private').get(id)[2]
