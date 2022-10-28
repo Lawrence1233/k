@@ -122,11 +122,11 @@ def b4():
             </center>
             """%(i[1][0],i[1][1])
 
-#     if session.get('last_time') != None:
-#         if time.time() - session['last_time'] > 86400:
-#             del idl[session['id']]
-#             del session['id']
-#             return '您超过一天未访问,服务器清空Cookies，请重新刷新此网页以重新分配一个标识符。如果您加入过非公开聊天室，您的记录也会失效，下次您重新加入的时候需要重新输入密码。'
+    if session.get('last_time') != None:
+        if time.time() - session['last_time'] > 86400:
+            del idl[session['id']]
+            del session['id']
+            return '您超过一天未访问,服务器清空Cookies，请重新刷新此网页以重新分配一个标识符。如果您加入过非公开聊天室，您的记录也会失效，下次您重新加入的时候需要重新输入密码。'
 
 
 
@@ -134,10 +134,10 @@ def b4():
 # #         
 # #         idl[session['id']]=request.remote_addr
 
-#     if idl[session['id']]!=request.remote_addr:
-#         del idl[session['id']]
-#         del session['id']
-#         return '您的标识符发生变化，服务器已清空Cookies，请重新刷新此网页以重新分配一个标识符。如果您加入过非公开聊天室，您的记录也会失效，下次您重新加入的时候需要重新输入密码。'
+    if idl[session['id']]!=request.remote_addr:
+        del idl[session['id']]
+        del session['id']
+        return '您的标识符发生变化，服务器已清空Cookies，请重新刷新此网页以重新分配一个标识符。如果您加入过非公开聊天室，您的记录也会失效，下次您重新加入的时候需要重新输入密码。'
 
 
 
