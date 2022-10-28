@@ -105,37 +105,37 @@ def b4():
     if session.get('id') == None:
         session['id']=rd(32)
         idl[session['id']]=request.remote_addr
-    if session.get('hacker') == True:
-        del session['hacker']
-        return '温馨提示:你最近的操作可能有恶意行为，请友善使用该网站。'
-    for i in notice.items():
-        if session.get(i[0]) == None:
-            session[i[0]]='1'
-            return """
-            <!Doctype html>
-            <center>
-            <h1>%s</h1>
-            <h2><pre>%s</pre></h2>
-            <i><small>如要访问正常功能，请刷新。</small></i>
-            </center>
-            """%(i[1][0],i[1][1])
+#     if session.get('hacker') == True:
+#         del session['hacker']
+#         return '温馨提示:你最近的操作可能有恶意行为，请友善使用该网站。'
+#     for i in notice.items():
+#         if session.get(i[0]) == None:
+#             session[i[0]]='1'
+#             return """
+#             <!Doctype html>
+#             <center>
+#             <h1>%s</h1>
+#             <h2><pre>%s</pre></h2>
+#             <i><small>如要访问正常功能，请刷新。</small></i>
+#             </center>
+#             """%(i[1][0],i[1][1])
 
-    if session.get('last_time') != None:
-        if time.time() - session['last_time'] > 86400:
-            del idl[session['id']]
-            del session['id']
-            return '您超过10分钟未访问,服务器清空Cookies，请重新刷新此网页以重新分配一个标识符。如果您加入过非公开聊天室，您的记录也会失效，下次您重新加入的时候需要重新输入密码。'
+#     if session.get('last_time') != None:
+#         if time.time() - session['last_time'] > 86400:
+#             del idl[session['id']]
+#             del session['id']
+#             return '您超过10分钟未访问,服务器清空Cookies，请重新刷新此网页以重新分配一个标识符。如果您加入过非公开聊天室，您的记录也会失效，下次您重新加入的时候需要重新输入密码。'
 
 
 
-    if session.get('id') not in idl:#将记录绑定在user_id
-        session['id']=rd(32)
-        idl[session['id']]=request.remote_addr
+#     if session.get('id') not in idl:#将记录绑定在user_id
+#         session['id']=rd(32)
+#         idl[session['id']]=request.remote_addr
 
-    if idl[session['id']]!=request.remote_addr:
-        del idl[session['id']]
-        del session['id']
-        return '您的标识符发生变化，服务器已清空Cookies，请重新刷新此网页以重新分配一个标识符。如果您加入过非公开聊天室，您的记录也会失效，下次您重新加入的时候需要重新输入密码。'
+#     if idl[session['id']]!=request.remote_addr:
+#         del idl[session['id']]
+#         del session['id']
+#         return '您的标识符发生变化，服务器已清空Cookies，请重新刷新此网页以重新分配一个标识符。如果您加入过非公开聊天室，您的记录也会失效，下次您重新加入的时候需要重新输入密码。'
 
 
 
