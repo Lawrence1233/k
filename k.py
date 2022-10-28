@@ -121,7 +121,7 @@ def b4():
             """%(i[1][0],i[1][1])
 
     if session.get('last_time') != None:
-        if time.time() - session['last_time'] > (10 * 60):
+        if time.time() - session['last_time'] > 86400:
             del idl[session['id']]
             del session['id']
             return '您超过10分钟未访问,服务器清空Cookies，请重新刷新此网页以重新分配一个标识符。如果您加入过非公开聊天室，您的记录也会失效，下次您重新加入的时候需要重新输入密码。'
@@ -144,7 +144,7 @@ def b4():
 @app.after_request
 def after(res):
     session.permanent = True
-    app.permanent_session_lifetime = timedelta(minutes=10)
+    app.permanent_session_lifetime = timedelta(hours=24)
     return res
 
 @app.route('/')
