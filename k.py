@@ -1,4 +1,4 @@
-# coding:utf-8
+﻿# coding:utf-8
 from flask import *
 import requests, time, re, hashlib,string,random
 import copy
@@ -15,6 +15,10 @@ app = Flask(__name__)
 from flask import Flask, session
 app.config["SECRET_KEY"] = rd(1024)
 # app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=2)
+import re
+
+block2={}
+block3=[]
 
 idl={}
 
@@ -36,6 +40,22 @@ def _3(a):
 @app.template_global()  # 定义全局模板函数
 def _4(a):
     return a[3]
+
+def get_link(text):
+    pattern = re.compile(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')  # 匹配模式
+    url=re.findall(pattern,text)
+    cnt=0
+    for i in url:
+        text.replace(i,'<-%s->'%cnt)
+        cnt+=1
+    return url
+
+def add_link(text,url_list):
+    cnt=0
+    for i in url_list:
+        text.replace('<-%s->'%cnt,'[url]%s[url2]%s[\\url]'%(i,i))
+    return text
+
 
 
 def get_ip_addr(ip):
@@ -105,38 +125,37 @@ def b4():
     if session.get('id') == None:
         session['id']=rd(32)
         idl[session['id']]=request.remote_addr
-        
-#     if session.get('hacker') == True:
-#         del session['hacker']
-#         return '温馨提示:你最近的操作可能有恶意行为，请友善使用该网站。'
-    
-#     for i in notice.items():
-#         if session.get(i[0]) == None:
-#             session[i[0]]='1'
-#             return """
-#             <!Doctype html>
-#             <center>
-#             <h1>%s</h1>
-#             <h2><pre>%s</pre></h2>
-#             <i><small>如要访问正常功能，请刷新。</small></i>
-#             </center>
-#             """%(i[1][0],i[1][1])
-
-#     if session.get('last_time') != None:
-#         if time.time() - session['last_time'] > 86400:
-#             del idl[session['id']]
-#             del session['id']
-#             return '您超过一天未访问,服务器清空Cookies，请重新刷新此网页以重新分配一个标识符。如果您加入过非公开聊天室，您的记录也会失效，下次您重新加入的时候需要重新输入密码。'
-
-
-
-# #     if session.get('id') not in idl:#将记录绑定在user_id
-# #         idl[session['id']]=request.remote_addr
-
-#     if idl[session['id']]!=request.remote_addr:
-#         del idl[session['id']]
-#         del session['id']
-#         return '您的标识符发生变化，服务器已清空Cookies，请重新刷新此网页以重新分配一个标识符。如果您加入过非公开聊天室，您的记录也会失效，下次您重新加入的时候需要重新输入密码。'
+    if session.get('hacker') == True:
+        del session['hacker']
+        return '温馨提示:你最近的操作可能有恶意行为，请友善使用该网站。'
+    for i in notice.items():
+        if session.get(i[0]) == None:
+            session[i[0]]='1'
+            return """
+            <!Doctype html>
+            <center>
+            <h1>%s</h1>
+            <h2><pre>%s</pre></h2>
+            <i><small>如要访问正常功能，请刷新。</small></i>
+            </center>
+            """%(i[1][0],i[1][1])
+    #
+    # if session.get('last_time') != None:
+    #     if time.time() - session['last_time'] > 86400:
+    #         del idl[session['id']]
+    #         del session['id']
+    #         return '您超过10分钟未访问,服务器清空Cookies，请重新刷新此网页以重新分配一个标识符。如果您加入过非公开聊天室，您的记录也会失效，下次您重新加入的时候需要重新输入密码。'
+    #
+    #
+    #
+    # if session.get('id') not in idl:#将记录绑定在user_id
+    #     session['id']=rd(32)
+    #     idl[session['id']]=request.remote_addr
+    #
+    # if idl[session['id']]!=request.remote_addr:
+    #     del idl[session['id']]
+    #     del session['id']
+    #     return '您的标识符发生变化，服务器已清空Cookies，请重新刷新此网页以重新分配一个标识符。如果您加入过非公开聊天室，您的记录也会失效，下次您重新加入的时候需要重新输入密码。'
 
 
 
@@ -208,6 +227,14 @@ def login():
 def room(id):
     global block_room
 
+    if session.get('id') in block3:
+        return redirect('/security/room/banned')
+    if session.get('id') in block2:
+        if id in block2.get(session.get('id')):
+            return redirect('/security/room/banned')
+
+
+
     tips = ''
     name = request.values.get('name')
     text = request.values.get('text')
@@ -238,6 +265,12 @@ def room(id):
 def room_upload(id):
     # global reader
     # response = reader.city(ip)
+    if session.get('id') in block3:
+        return redirect('/security/room/banned')
+    if session.get('id') in block2:
+        if id in block2.get(session.get('id')):
+            return redirect('/security/room/banned')
+
     if id in send_block:
         return "该聊天室已被管理员禁止发言"
     if id in block_room:
@@ -246,13 +279,13 @@ def room_upload(id):
     # name = request.remote_addr[:request.remote_addr.rfind('.')+1]+'*'*len(request.remote_addr[request.remote_addr.rfind('.')+1:])
     # name=hash(name)
 
-    if session.get('id') == None:
-        session['id']=rd(32)
-        idl[session['id']]=request.remote_addr
-
-    if session.get('id') != None and session.get('id') not in idl:
-        session['id']=rd(32)
-        idl[session['id']]=request.remote_addr
+    # if session.get('id') == None:
+    #     session['id']=rd(32)
+    #     idl[session['id']]=request.remote_addr
+    #
+    # if session.get('id') != None and session.get('id') not in idl:
+    #     session['id']=rd(32)
+    #     idl[session['id']]=request.remote_addr
 
     if idl[session['id']]!=request.remote_addr:
         del idl[session['id']]
@@ -500,15 +533,12 @@ def private_room_upload(id):
         return '无法访问此房间：您并未在这个房间登录，请登录后重试。'
 
     if session.get('id') not in private_user_key:
-        print(session.get('id'))
-        print(private_user_key)
-        
         session.clear()
         return '拒绝访问：本次请求可能含有攻击行为。2'
     # print(private)
 
     if session.get('private').get(id)[0] not in private_key[id]:
-        
+        session.clear()
         session['hacker']=True
         return '拒绝访问：本次请求可能含有攻击行为。1'
     pswd=session.get('private').get(id)[2]
@@ -577,14 +607,54 @@ def conduct():
     不要贩卖东西。
     不要搞诈骗。
     
-    被我发现聊一些不好的东西我会立刻封停房间（30分钟到24小时不等）
-    其他的我不管。
-    
-    
     
     """.replace('\n','<br/>')
 
 
+@app.route('/ban/<id>/<room>')
+def block_user(id,room):
+    if id not in block2:
+        block2[id] = []
+    block2[id].append(room)
+    return 'SUCCESS'
+
+@app.route('/ban-all/<id>')
+def ban_all_room(id):
+    block3.append(id)
+    return 'SUCCESS'
+
+@app.route('/security/room/banned')
+def lookup_room_banned():
+    if session.get('id') in block3:
+        return '你被禁止进入：所有房间<br/>如对处罚结果有异议，请联系管理员。'
+    if session.get('id') not in block2:
+        return '没有封禁记录'
+    else:
+        return '你被禁止进入：%s<br/>如对处罚结果有异议，请联系管理员。'%block2[session.get('id')]
+
+
+@app.route('/website-proxy')
+def website_proxy_ui():
+    return render_template('website-proxy-ui.html')
+
+
+
+@app.route('/website-proxy/get',methods=["POST"])
+def website_proxy():
+    url=str(request.form.get('url'))
+    res = requests.get(url)
+    res.encoding = 'utf-8'
+    return res.text
+
+# @app.route('/website-proxy/<url>/https')
+# def website_proxy_https(url):
+#     if 'http://' not in url or 'https://' not in url:
+#         url='https://'+url
+#     res=requests.get(url)
+#     res.encoding='utf-8'
+#     return res.text
+
+
 if __name__ == '__main__':
     app.debug = True  # 设置调试模式，生产模式的时候要关掉debug
-    app.run(host='0.0.0.0',port=80,debug=True)
+    app.run(host='0.0.0.0', debug=True)
