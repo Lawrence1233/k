@@ -24,15 +24,15 @@ idl={}
 
 account={}
 
-with open('w.txt','r',encoding='utf-8') as f:
-    word=f.read().replace('\n','')#.replace('，','').replace('：','').replace('。','').replace('”','').replace('“','').replace('、','').replace('！','').replace('；','')
+# with open('w.txt','r',encoding='utf-8') as f:
+#     word=f.read().replace('\n','')#.replace('，','').replace('：','').replace('。','').replace('”','').replace('“','').replace('、','').replace('！','').replace('；','')
 
-def rd_w(n=10):
-    global word
-    t=''
-    r=random.randint(0,len(word))
-    for i in range(random.randint(0,len(word))-n,r+n):
-        t+=word[i]
+# def rd_w(n=10):
+#     global word
+#     t=''
+#     r=random.randint(0,len(word))
+#     for i in range(random.randint(0,len(word))-n,r+n):
+#         t+=word[i]
     return t
 
 @app.template_global()  # 定义全局模板函数
@@ -685,4 +685,4 @@ def rl():
 
 if __name__ == '__main__':
     # app.debug = True  # 设置调试模式，生产模式的时候要关掉debug
-    app.run(host='0.0.0.0',port=80, debug=True)
+    app.run(host='0.0.0.0',port=80, debug=False)
