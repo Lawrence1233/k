@@ -33,7 +33,7 @@ account={}
 #     r=random.randint(0,len(word))
 #     for i in range(random.randint(0,len(word))-n,r+n):
 #         t+=word[i]
-    return t
+#     return t
 
 @app.template_global()  # 定义全局模板函数
 def _1(a):
